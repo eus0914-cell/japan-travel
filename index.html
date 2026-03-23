@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>일본 간사이 여행 2026</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; }
+  .app { max-width: 430px; margin: 0 auto; padding: 0 0 80px 0; background: #f5f5f5; min-height: 100vh; }
+  .header { background: #c0392b; padding: 16px 20px 12px; border-radius: 0 0 20px 20px; }
+  .header-top { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+  .header h1 { font-size: 18px; font-weight: 600; color: white; }
+  .header-sub { font-size: 12px; color: rgba(255,255,255,0.8); margin-left: 32px; }
+  .flight-bar { background: rgba(255,255,255,0.15); border-radius: 10px; padding: 8px 12px; margin-top: 10px; display: flex; justify-content: space-between; align-items: center; }
+  .fi { text-align: center; }
+  .fi .lb { font-size: 10px; color: rgba(255,255,255,0.7); }
+  .fi .vl { font-size: 13px; font-weight: 600; color: white; }
+  .tab-bar { display: flex; background: white; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 10; overflow-x: auto; scrollbar-width: none; }
+  .tab-bar::-webkit-scrollbar { display: none; }
+  .tab { flex: none; padding: 10px 12px; font-size: 12px; color: #888; cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; }
+  .tab.active { color: #c0392b; border-bottom-color: #c0392b; font-weight: 600; }
+  .content { padding: 16px; }
+  .section { display: none; }
+  .section.active { display: block; }
+  .sec-title { font-size: 13px; font-weight: 600; color: #888; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.3px; }
+  .card { background: white; border: 1px solid #eee; border-radius: 12px; padding: 14px; margin-bottom: 10px; }
+  .person-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .avatar { width: 36px; height: 36px; border-radius: 50%; background: #fde8e8; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; color: #c0392b; flex-shrink: 0; }
+  .avatar-gray { background: #f5f5f5; color: #888; }
+  .pname { font-size: 14px; font-weight: 600; color: #222; }
+  .pname-en { font-size: 11px; color: #888; }
+  .local-badge { display: inline-block; font-size: 10px; padding: 2px 7px; border-radius: 20px; background: #e6f1fb; color: #185fa5; border: 1px solid #b5d4f4; margin-top: 3px; }
+  .info-row { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid #f0f0f0; }
+  .info-row:last-child { border-bottom: none; }
+  .il { font-size: 11px; color: #888; }
+  .iv { font-size: 11px; color: #222; font-weight: 600; text-align: right; }
+  .flight-card { background: white; border: 1px solid #eee; border-radius: 12px; padding: 14px; margin-bottom: 10px; }
+  .fc-title { font-size: 11px; color: #888; margin-bottom: 10px; font-weight: 600; }
+  .fc-route { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+  .ap { text-align: center; }
+  .ap-code { font-size: 22px; font-weight: 700; color: #222; }
+  .ap-name { font-size: 10px; color: #888; }
+  .fc-mid { flex: 1; text-align: center; }
+  .fc-time { font-size: 15px; font-weight: 600; color: #222; }
+  .fc-num { font-size: 10px; color: #888; margin-top: 2px; }
+  .fc-meta { display: flex; justify-content: space-between; }
+  .fc-meta span { font-size: 10px; color: #888; }
+  .fc-meta b { color: #222; font-weight: 600; }
+  .shinkansen-card { background: white; border: 1px solid #eee; border-radius: 12px; overflow: hidden; margin-bottom: 10px; }
+  .sh-head { background: #1a6bbf; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; }
+  .sh-head-title { font-size: 13px; font-weight: 600; color: white; }
+  .sh-head-sub { font-size: 10px; color: rgba(255,255,255,0.8); }
+  .sh-ticket-num { font-size: 10px; color: rgba(255,255,255,0.7); background: rgba(255,255,255,0.15); padding: 3px 8px; border-radius: 20px; }
+  .sh-body { padding: 12px 14px; }
+  .sh-route { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .sh-city { text-align: center; }
+  .sh-city-name { font-size: 18px; font-weight: 700; color: #222; }
+  .sh-city-sub { font-size: 10px; color: #888; }
+  .sh-mid { flex: 1; text-align: center; }
+  .sh-time { font-size: 14px; font-weight: 600; color: #222; }
+  .sh-train { font-size: 11px; color: #1a6bbf; font-weight: 600; margin-top: 2px; }
+  .sh-meta { display: flex; justify-content: space-between; padding-top: 8px; border-top: 1px solid #f0f0f0; }
+  .sh-meta span { font-size: 10px; color: #888; }
+  .sh-meta b { color: #222; font-weight: 600; }
+  .ticket-card { background: white; border: 1px solid #eee; border-radius: 12px; overflow: hidden; margin-bottom: 10px; }
+  .tk-head { padding: 10px 14px; }
+  .tk-head-blue { background: #003087; }
+  .tk-head-red { background: #c0392b; }
+  .tk-logo { font-size: 13px; font-weight: 700; color: white; }
+  .tk-sub { font-size: 11px; color: rgba(255,255,255,0.85); }
+  .tk-body { padding: 12px 14px; }
+  .tk-info { display: flex; justify-content: space-between; padding: 4px 0; }
+  .tk-il { font-size: 11px; color: #888; }
+  .tk-iv { font-size: 11px; color: #222; font-weight: 600; }
+  .tk-divider { border: none; border-top: 1px solid #f0f0f0; margin: 8px 0; }
+  .tk-person { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f0f0f0; }
+  .tk-person:last-child { border-bottom: none; }
+  .tp-name { font-size: 13px; font-weight: 600; color: #222; }
+  .tp-num { font-size: 10px; color: #888; }
+  .view-btn { background: #fff5f5; border: 1px solid #fcc; border-radius: 6px; padding: 5px 10px; font-size: 11px; color: #c0392b; cursor: pointer; font-weight: 600; white-space: nowrap; text-decoration: none; display: inline-block; }
+  .view-btn:hover { background: #fde8e8; }
+  .stay-dates { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+  .date-badge { background: #fde8e8; color: #c0392b; font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 20px; }
+  .stay-name { font-size: 15px; font-weight: 600; color: #222; margin-bottom: 2px; }
+  .stay-sub { font-size: 11px; color: #888; margin-bottom: 8px; }
+  .tags { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
+  .tag { font-size: 10px; padding: 2px 7px; border-radius: 20px; border: 1px solid #eee; color: #888; }
+  .tag-g { background: #eaf3de; color: #3b6d11; border-color: #c0dd97; }
+  .tag-b { background: #e6f1fb; color: #185fa5; border-color: #b5d4f4; }
+  .map-btn { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 8px; background: #f9f9f9; font-size: 12px; color: #333; cursor: pointer; margin-top: 8px; text-align: center; display: block; text-decoration: none; }
+  .jp-request { background: #faeeda; border: 1px solid #fac775; border-radius: 8px; padding: 12px; margin-top: 10px; }
+  .jp-request-label { font-size: 10px; font-weight: 600; color: #854f0b; margin-bottom: 6px; }
+  .jp-request-text { font-size: 12px; color: #633806; line-height: 1.8; }
+  .day-selector { display: flex; gap: 6px; margin-bottom: 14px; overflow-x: auto; scrollbar-width: none; }
+  .day-selector::-webkit-scrollbar { display: none; }
+  .day-btn { flex: none; padding: 6px 14px; border-radius: 20px; border: 1px solid #ddd; font-size: 12px; color: #888; cursor: pointer; background: white; }
+  .day-btn.active { background: #c0392b; color: white; border-color: #c0392b; }
+  .sch-item { display: flex; gap: 10px; margin-bottom: 4px; }
+  .sch-time { width: 50px; flex-shrink: 0; padding-top: 3px; text-align: right; font-size: 10px; color: #888; }
+  .sch-line { display: flex; flex-direction: column; align-items: center; width: 14px; flex-shrink: 0; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: #c0392b; flex-shrink: 0; margin-top: 4px; }
+  .dot-g { background: #ccc; }
+  .vline { width: 1px; background: #eee; flex: 1; min-height: 18px; }
+  .sch-body { flex: 1; padding-bottom: 10px; }
+  .sch-title { font-size: 13px; font-weight: 600; color: #222; line-height: 1.4; }
+  .sch-note { font-size: 11px; color: #888; margin-top: 2px; line-height: 1.5; white-space: pre-line; }
+  .map-link { font-size: 11px; color: #c0392b; text-decoration: none; margin-top: 3px; display: inline-block; }
+  .meal-day { margin-bottom: 16px; }
+  .meal-dh { font-size: 12px; font-weight: 600; color: #888; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #eee; }
+  .meal-card { background: white; border: 1px solid #eee; border-radius: 12px; padding: 12px 14px; margin-bottom: 6px; }
+  .meal-type { font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 20px; display: inline-block; margin-bottom: 5px; }
+  .mt-b { background: #eaf3de; color: #3b6d11; }
+  .mt-l { background: #faeeda; color: #854f0b; }
+  .mt-d { background: #fde8e8; color: #993c1d; }
+  .mt-n { background: #e6f1fb; color: #185fa5; }
+  .meal-name { font-size: 14px; font-weight: 600; color: #222; margin-bottom: 3px; }
+  .meal-tip { font-size: 11px; color: #888; line-height: 1.5; }
+
+  /* 날씨 */
+  .weather-header { background: linear-gradient(135deg, #1a6bbf 0%, #0e4a8a 100%); border-radius: 12px; padding: 16px; margin-bottom: 12px; color: white; }
+  .weather-header-title { font-size: 12px; color: rgba(255,255,255,0.8); margin-bottom: 4px; }
+  .weather-header-sub { font-size: 11px; color: rgba(255,255,255,0.6); }
+  .weather-city-card { background: white; border: 1px solid #eee; border-radius: 12px; padding: 14px; margin-bottom: 10px; }
+  .wc-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+  .wc-left { }
+  .wc-city { font-size: 16px; font-weight: 700; color: #222; }
+  .wc-date { font-size: 11px; color: #888; margin-top: 2px; }
+  .wc-right { text-align: right; }
+  .wc-temp { font-size: 32px; font-weight: 700; color: #222; line-height: 1; }
+  .wc-desc { font-size: 11px; color: #888; margin-top: 4px; }
+  .wc-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .wc-stat { background: #f9f9f9; border-radius: 8px; padding: 8px; text-align: center; }
+  .wc-stat-label { font-size: 10px; color: #888; margin-bottom: 3px; }
+  .wc-stat-value { font-size: 13px; font-weight: 600; color: #222; }
+  .wc-forecast { margin-top: 12px; padding-top: 12px; border-top: 1px solid #f0f0f0; }
+  .wc-forecast-title { font-size: 11px; color: #888; font-weight: 600; margin-bottom: 8px; }
+  .wc-days { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; }
+  .wc-days::-webkit-scrollbar { display: none; }
+  .wc-day { flex: none; background: #f9f9f9; border-radius: 8px; padding: 8px 10px; text-align: center; min-width: 52px; }
+  .wc-day-name { font-size: 10px; color: #888; margin-bottom: 4px; }
+  .wc-day-icon { font-size: 18px; margin-bottom: 4px; }
+  .wc-day-temp { font-size: 11px; font-weight: 600; color: #222; }
+  .wc-day-rain { font-size: 10px; color: #1a6bbf; margin-top: 2px; }
+  .wc-loading { text-align: center; padding: 20px; color: #888; font-size: 13px; }
+  .wc-error { background: #fff5f5; border: 1px solid #fcc; border-radius: 8px; padding: 12px; color: #c0392b; font-size: 12px; text-align: center; }
+  .weather-note { background: #f0f7ff; border: 1px solid #b5d4f4; border-radius: 8px; padding: 10px 12px; margin-bottom: 12px; font-size: 11px; color: #185fa5; line-height: 1.6; }
+
+  /* 챗봇 */
+
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div class="header-top">
+      <span style="font-size:22px;">🇯🇵</span>
+      <h1>일본 간사이 여행</h1>
+    </div>
+    <div class="header-sub">2026년 3월 25일 – 28일 · 4인</div>
+    <div class="flight-bar">
+      <div class="fi"><div class="lb">출발</div><div class="vl">GMP 09:30</div></div>
+      <div style="color:rgba(255,255,255,0.8);font-size:18px;">✈</div>
+      <div class="fi"><div class="lb">편명</div><div class="vl">KE2117</div></div>
+      <div style="color:rgba(255,255,255,0.8);font-size:18px;">✈</div>
+      <div class="fi"><div class="lb">도착</div><div class="vl">KIX 11:20</div></div>
+    </div>
+  </div>
+
+  <div class="tab-bar">
+    <div class="tab active" onclick="showTab('info',this)">개인정보</div>
+    <div class="tab" onclick="showTab('ticket',this)">티켓</div>
+    <div class="tab" onclick="showTab('stay',this)">숙박</div>
+    <div class="tab" onclick="showTab('schedule',this)">일정</div>
+    <div class="tab" onclick="showTab('food',this)">식당</div>
+    <div class="tab" onclick="showTab('weather',this)">날씨</div>
+  </div>
+
+  <div class="content">
+
+    <!-- 개인정보 -->
+    <div class="section active" id="sec-info">
+      <div class="sec-title">여행자 정보</div>
+      <div class="card">
+        <div class="person-header"><div class="avatar">영민</div><div><div class="pname">서영민</div><div class="pname-en">SEO YOUNGMIN</div></div></div>
+        <div class="info-row"><span class="il">생년월일</span><span class="iv">1996-09-14</span></div>
+        <div class="info-row"><span class="il">여권번호</span><span class="iv">M23161481</span></div>
+      </div>
+      <div class="card">
+        <div class="person-header"><div class="avatar">미정</div><div><div class="pname">손미정</div><div class="pname-en">SON MIJUNG</div></div></div>
+        <div class="info-row"><span class="il">생년월일</span><span class="iv">1967-04-17</span></div>
+        <div class="info-row"><span class="il">여권번호</span><span class="iv">M58954809</span></div>
+      </div>
+      <div class="card">
+        <div class="person-header"><div class="avatar">종진</div><div><div class="pname">서종진</div><div class="pname-en">SEO JONGJIN</div></div></div>
+        <div class="info-row"><span class="il">생년월일</span><span class="iv">1968-04-20</span></div>
+        <div class="info-row"><span class="il">여권번호</span><span class="iv">M62335116</span></div>
+      </div>
+      <div class="card">
+        <div class="person-header">
+          <div class="avatar avatar-gray">정민</div>
+          <div><div class="pname">서정민</div><div class="pname-en">SEO JUNGMIN</div><span class="local-badge">일본 거주</span></div>
+        </div>
+      </div>
+      <div class="sec-title" style="margin-top:16px;">항공편 (서영민 · 손미정 · 서종진)</div>
+      <div class="flight-card">
+        <div class="fc-title">가는 편</div>
+        <div class="fc-route">
+          <div class="ap"><div class="ap-code">GMP</div><div class="ap-name">김포공항</div></div>
+          <div class="fc-mid"><div class="fc-time">09:30 → 11:20</div><div class="fc-num">대한항공 KE2117</div></div>
+          <div class="ap"><div class="ap-code">KIX</div><div class="ap-name">간사이공항</div></div>
+        </div>
+        <div class="fc-meta"><span>날짜 <b>2026.03.25</b></span><span>소요 <b>약 2시간</b></span></div>
+      </div>
+      <div class="flight-card">
+        <div class="fc-title">오는 편</div>
+        <div class="fc-route">
+          <div class="ap"><div class="ap-code">KIX</div><div class="ap-name">간사이공항</div></div>
+          <div class="fc-mid"><div class="fc-time">19:55 → 21:55</div><div class="fc-num">대한항공 KE2120</div></div>
+          <div class="ap"><div class="ap-code">GMP</div><div class="ap-name">김포공항</div></div>
+        </div>
+        <div class="fc-meta"><span>날짜 <b>2026.03.28</b></span><span>소요 <b>약 2시간</b></span></div>
+      </div>
+      <div class="sec-title" style="margin-top:16px;">신칸센 (서정민)</div>
+      <div class="shinkansen-card">
+        <div class="sh-head">
+          <div><div class="sh-head-title">스마트 EX · 위탁번호 2004</div><div class="sh-head-sub">미사용</div></div>
+          <span class="sh-ticket-num">노조미 27호</span>
+        </div>
+        <div class="sh-body">
+          <div class="sh-route">
+            <div class="sh-city"><div class="sh-city-name">도쿄</div><div class="sh-city-sub">東京</div></div>
+            <div class="sh-mid"><div class="sh-time">11:12 → 13:23</div><div class="sh-train">노조미 27호</div></div>
+            <div class="sh-city"><div class="sh-city-name">교토</div><div class="sh-city-sub">京都</div></div>
+          </div>
+          <div class="sh-meta"><span>날짜 <b>2026.03.25 (수)</b></span><span>소요 <b>약 2시간 11분</b></span></div>
+        </div>
+      </div>
+      <div class="shinkansen-card">
+        <div class="sh-head">
+          <div><div class="sh-head-title">EX조특 3[그린차용] · 위탁번호 2002</div><div class="sh-head-sub">미사용</div></div>
+          <span class="sh-ticket-num">히카리 658호</span>
+        </div>
+        <div class="sh-body">
+          <div class="sh-route">
+            <div class="sh-city"><div class="sh-city-name">교토</div><div class="sh-city-sub">京都</div></div>
+            <div class="sh-mid"><div class="sh-time">16:33 → 19:09</div><div class="sh-train">히카리 658호</div></div>
+            <div class="sh-city"><div class="sh-city-name">도쿄</div><div class="sh-city-sub">東京</div></div>
+          </div>
+          <div class="sh-meta"><span>날짜 <b>2026.03.28 (토)</b></span><span>소요 <b>약 2시간 36분</b></span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 티켓 -->
+    <div class="section" id="sec-ticket">
+      <div class="sec-title">JR 웨스트 패스</div>
+      <div class="ticket-card">
+        <div class="tk-head tk-head-blue"><div class="tk-logo">JR-WEST</div><div class="tk-sub">Kansai Wide Rail Pass · 5Days</div></div>
+        <div class="tk-body">
+          <div class="tk-info"><span class="tk-il">발급일</span><span class="tk-iv">2026.03.21</span></div>
+          <div class="tk-info"><span class="tk-il">교환처</span><span class="tk-iv">JR 오사카 / 간사이공항 / 교토역</span></div>
+          <hr class="tk-divider">
+          <div class="tk-person"><div><div class="tp-name">서영민</div><div class="tp-num">MNN184112359239</div></div><a class="view-btn" href="https://drive.google.com/file/d/1Jq5iafBiDJLysjgBIu4EKJaYk-Y9sbQf/view" target="_blank">티켓 보기 ↗</a></div>
+          <div class="tk-person"><div><div class="tp-name">손미정</div><div class="tp-num">MNN184112359246</div></div><a class="view-btn" href="https://drive.google.com/file/d/1oysSSAJdYeDWu4_lErl_UrEgbnGbv5Oq/view" target="_blank">티켓 보기 ↗</a></div>
+          <div class="tk-person"><div><div class="tp-name">서종진</div><div class="tp-num">MNN184112359253</div></div><a class="view-btn" href="https://drive.google.com/file/d/1obqZIYg6OReRPxGA9yZ8HNaqCsku4vU0/view" target="_blank">티켓 보기 ↗</a></div>
+          <div class="tk-person"><div><div class="tp-name">서정민</div><div class="tp-num">MNN184112359260</div></div><a class="view-btn" href="https://drive.google.com/file/d/19BaQZjWN_yfr4QL8h15CvnnK9fhSnDSi/view" target="_blank">티켓 보기 ↗</a></div>
+        </div>
+      </div>
+      <div class="sec-title" style="margin-top:16px;">기노사키 머스트비짓 패스</div>
+      <div class="ticket-card">
+        <div class="tk-head tk-head-red"><div class="tk-logo">KINOSAKI</div><div class="tk-sub">Must-Visits Pass · 3Days</div></div>
+        <div class="tk-body">
+          <div class="tk-info"><span class="tk-il">유효기간</span><span class="tk-iv">2026.03.21 ~ 06.19</span></div>
+          <div class="tk-info"><span class="tk-il">교환처</span><span class="tk-iv">SOZORO 기노사키 온천 관광안내소</span></div>
+          <hr class="tk-divider">
+          <div class="tk-person"><div><div class="tp-name">1번</div><div class="tp-num">주문번호 1136564968</div></div><a class="view-btn" href="https://drive.google.com/file/d/1UnFPnl3SwbXWBH9wGopb0CyD46Jwpz3K/view" target="_blank">티켓 보기 ↗</a></div>
+          <div class="tk-person"><div><div class="tp-name">2번</div><div class="tp-num">주문번호 1136579031</div></div><a class="view-btn" href="https://drive.google.com/file/d/17oVpc80c-m2OqcH6QqKzIobXpzzHWfQB/view" target="_blank">티켓 보기 ↗</a></div>
+          <div class="tk-person"><div><div class="tp-name">3번</div><div class="tp-num">주문번호 1136564971</div></div><a class="view-btn" href="https://drive.google.com/file/d/19vFHdnKOpNLUbi3st_AbJYSIkfIVG3-n/view" target="_blank">티켓 보기 ↗</a></div>
+          <div class="tk-person"><div><div class="tp-name">4번</div><div class="tp-num">주문번호 1136564974</div></div><a class="view-btn" href="https://drive.google.com/file/d/1sAG9PinrVT-WocOvx2oeOw2U71XiiX2v/view" target="_blank">티켓 보기 ↗</a></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 숙박 -->
+    <div class="section" id="sec-stay">
+      <div class="sec-title">숙박 정보</div>
+      <div class="card">
+        <div class="stay-dates"><span class="date-badge">3/25</span><span style="color:#888;">→</span><span class="date-badge">3/26</span><span style="font-size:10px;color:#888;">1박</span></div>
+        <div class="stay-name">Hotel ZIZI Kyoto Gion</div>
+        <div class="stay-sub">ホテルジジ京都祇園 · 기온, 교토</div>
+        <div class="tags"><span class="tag tag-b">패밀리 트윈룸</span><span class="tag tag-g">무료 Wi-Fi</span><span class="tag">금연 · 4인</span></div>
+        <div class="info-row"><span class="il">예약번호</span><span class="iv">1692834761</span></div>
+        <div class="info-row"><span class="il">참조번호</span><span class="iv">5557615984</span></div>
+        <div class="info-row"><span class="il">연락처</span><span class="iv">+81 80-8760-2427</span></div>
+        <a class="map-btn" href="https://maps.google.com/?q=Hotel+ZIZI+Kyoto+Gion" target="_blank">지도에서 보기 ↗</a>
+      </div>
+      <div class="card">
+        <div class="stay-dates"><span class="date-badge">3/26</span><span style="color:#888;">→</span><span class="date-badge">3/27</span><span style="font-size:10px;color:#888;">1박</span></div>
+        <div class="stay-name">千年の湯 古まん</div>
+        <div class="stay-sub">Sennen no yu Koman Ryokan · 기노사키</div>
+        <div class="tags"><span class="tag tag-b">재패니즈룸</span><span class="tag tag-g">무료 Wi-Fi</span><span class="tag">도착 18:00~19:00</span></div>
+        <div class="info-row"><span class="il">예약번호</span><span class="iv">1692572796</span></div>
+        <div class="info-row"><span class="il">참조번호</span><span class="iv">8RA3A7H4</span></div>
+        <div class="info-row"><span class="il">연락처</span><span class="iv">+81 796-32-2331</span></div>
+        <div class="jp-request">
+          <div class="jp-request-label">숙소 요청사항 (일본어)</div>
+          <div class="jp-request-text">同じ部屋を2部屋予約しており、連泊で宿泊したいと思っております。部屋の移動なしに対応していただくことは可能でしょうか？<br><br>26日は夕食の予約をしておらず、27日は夕食を予約しておりますので、夜7時に食事をいただきたいと思っております。</div>
+        </div>
+        <a class="map-btn" href="https://maps.google.com/?q=千年の湯+古まん+城崎温泉" target="_blank">지도에서 보기 ↗</a>
+      </div>
+      <div class="card">
+        <div class="stay-dates"><span class="date-badge">3/27</span><span style="color:#888;">→</span><span class="date-badge">3/28</span><span style="font-size:10px;color:#888;">1박</span></div>
+        <div class="stay-name">千年の湯 古まん</div>
+        <div class="stay-sub">Sennen no yu Koman Ryokan · 기노사키</div>
+        <div class="tags"><span class="tag tag-b">재패니즈룸</span><span class="tag tag-g">조식+석식 포함</span><span class="tag tag-g">무료 Wi-Fi</span></div>
+        <div class="info-row"><span class="il">예약번호</span><span class="iv">1691975817</span></div>
+        <div class="info-row"><span class="il">참조번호</span><span class="iv">dv5z3x6p</span></div>
+        <div class="info-row"><span class="il">연락처</span><span class="iv">+81 796-32-2331</span></div>
+        <a class="map-btn" href="https://maps.google.com/?q=千年の湯+古まん+城崎温泉" target="_blank">지도에서 보기 ↗</a>
+      </div>
+    </div>
+
+    <!-- 일정 -->
+    <div class="section" id="sec-schedule">
+      <div class="day-selector">
+        <button class="day-btn active" onclick="showDay(0,this)">3/25 수</button>
+        <button class="day-btn" onclick="showDay(1,this)">3/26 목</button>
+        <button class="day-btn" onclick="showDay(2,this)">3/27 금</button>
+        <button class="day-btn" onclick="showDay(3,this)">3/28 토</button>
+      </div>
+      <div id="day-content"></div>
+    </div>
+
+    <!-- 식당 -->
+    <div class="section" id="sec-food">
+      <div class="meal-day">
+        <div class="meal-dh">3월 25일 (수) · 교토</div>
+        <div class="meal-card"><span class="meal-type mt-l">점심</span><div class="meal-name">장어덮밥 · 교토역</div><div class="meal-tip">에도가와(역내) 또는 나루세(가성비) — 짐 들고 이동 최소화!</div></div>
+        <div class="meal-card"><span class="meal-type mt-d">저녁</span><div class="meal-name">스키야키 · 타지마야</div><div class="meal-tip">시조카와라마치점 20:00 · 소고기 무한리필 🥩</div><a class="map-link" href="https://maps.google.com/?q=但馬屋+四条河原町+京都" target="_blank">길찾기 ↗</a></div>
+        <div class="meal-card"><span class="meal-type mt-n">야간</span><div class="meal-name">기온 & 카모강 산책</div><div class="meal-tip">교토의 첫날밤 즐기기</div></div>
+      </div>
+      <div class="meal-day">
+        <div class="meal-dh">3월 26일 (목) · 교토 → 기노사키</div>
+        <div class="meal-card"><span class="meal-type mt-b">아침</span><div class="meal-name">편의점 / 카페</div><div class="meal-tip">08:00 아라시야마 도착을 위해 간단히 요기</div></div>
+        <div class="meal-card"><span class="meal-type mt-l">점심</span><div class="meal-name">소바 & 도미덮밥 · 요시무라</div><div class="meal-tip">10:40 이름 적기 필수! 강변 뷰 보며 깔끔한 식사 🥢</div><a class="map-link" href="https://maps.google.com/?q=嵐山よしむら+京都" target="_blank">길찾기 ↗</a></div>
+        <div class="meal-card"><span class="meal-type mt-d">저녁</span><div class="meal-name">해산물/게살덮밥 · 오케쇼 센교</div><div class="meal-tip">16:50 기노사키 도착 후 역 앞에서 든든하게</div><a class="map-link" href="https://maps.google.com/?q=おけしょう鮮魚+城崎温泉" target="_blank">길찾기 ↗</a></div>
+      </div>
+      <div class="meal-day">
+        <div class="meal-dh">3월 27일 (금) · 아마노하시다테</div>
+        <div class="meal-card"><span class="meal-type mt-b">아침</span><div class="meal-name">빵집 파나티카</div><div class="meal-tip">게살 고로케 빵 등 기차 안에서 먹을 빵 구매 🥐</div></div>
+        <div class="meal-card"><span class="meal-type mt-l">점심</span><div class="meal-name">바지락 우동 / 카이센동</div><div class="meal-tip">아마노하시다테 현지 식사</div></div>
+        <div class="meal-card"><span class="meal-type mt-d">저녁</span><div class="meal-name">가이세키 정식 · 료칸</div><div class="meal-tip">여행 하이라이트! 게 & 다지마규 코스 🦀</div></div>
+        <div class="meal-card"><span class="meal-type mt-n">야간</span><div class="meal-name">로컬 게임장 / 온천</div><div class="meal-tip">사격 게임 한 판 후 온천 즐기기</div></div>
+      </div>
+      <div class="meal-day">
+        <div class="meal-dh">3월 28일 (토) · 귀국</div>
+        <div class="meal-card"><span class="meal-type mt-b">아침</span><div class="meal-name">료칸 조식</div><div class="meal-tip">정갈한 일본식 정찬으로 든든한 아침</div></div>
+        <div class="meal-card"><span class="meal-type mt-l">점심</span><div class="meal-name">기차 도시락 / 자유식</div><div class="meal-tip">로프웨이 전망대 후 12:30 기차 타기 전 구매</div></div>
+        <div class="meal-card"><span class="meal-type mt-d">저녁</span><div class="meal-name">공항 내 식사</div><div class="meal-tip">19:55 탑승 전 간사이 공항 마지막 식사</div></div>
+      </div>
+    </div>
+
+    <!-- 날씨 -->
+    <div class="section" id="sec-weather">
+      <div class="weather-note">
+        📅 여행 날짜 <b>3월 25~28일</b> 기준 각 여행지의 날씨 예보예요. Open-Meteo 실시간 데이터를 불러옵니다.
+      </div>
+      <div id="weather-content"><div class="wc-loading">날씨 정보를 불러오는 중...</div></div>
+    </div>
+
+
+  </div>
+</div>
+
+<script>
+// ── 날씨 ──
+const weatherLocations = [
+  { name: '교토', nameJp: '京都', lat: 35.0116, lon: 135.7681, days: ['3/25', '3/26'], emoji: '⛩️' },
+  { name: '기노사키', nameJp: '城崎温泉', lat: 35.6247, lon: 134.8086, days: ['3/26', '3/27'], emoji: '♨️' },
+  { name: '아마노하시다테', nameJp: '天橋立', lat: 35.5500, lon: 135.1833, days: ['3/27'], emoji: '🌲' },
+];
+
+const WMO_ICONS = {
+  0:'☀️',1:'🌤️',2:'⛅',3:'☁️',
+  45:'🌫️',48:'🌫️',
+  51:'🌦️',53:'🌦️',55:'🌧️',
+  61:'🌧️',63:'🌧️',65:'🌧️',
+  71:'🌨️',73:'🌨️',75:'❄️',
+  80:'🌦️',81:'🌧️',82:'⛈️',
+  95:'⛈️',96:'⛈️',99:'⛈️'
+};
+const WMO_DESC = {
+  0:'맑음',1:'대체로 맑음',2:'구름 조금',3:'흐림',
+  45:'안개',48:'안개',
+  51:'이슬비',53:'이슬비',55:'이슬비',
+  61:'비',63:'비',65:'강한 비',
+  71:'눈',73:'눈',75:'강한 눈',
+  80:'소나기',81:'소나기',82:'강한 소나기',
+  95:'뇌우',96:'뇌우',99:'뇌우'
+};
+
+async function loadWeather() {
+  const container = document.getElementById('weather-content');
+  container.innerHTML = '<div class="wc-loading">날씨 데이터 불러오는 중...</div>';
+  const dayNames = ['일','월','화','수','목','금','토'];
+  let html = '';
+  for (const loc of weatherLocations) {
+    try {
+      const url = `https://api.open-meteo.com/v1/forecast?latitude=${loc.lat}&longitude=${loc.lon}&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max,windspeed_10m_max&current_weather=true&timezone=Asia%2FTokyo&forecast_days=14`;
+      const res = await fetch(url);
+      const data = await res.json();
+      const daily = data.daily;
+      // Find March 25-28 indices
+      const travelDates = ['2026-03-25','2026-03-26','2026-03-27','2026-03-28'];
+      const forecastDays = daily.time.map((d, i) => ({
+        date: d,
+        code: daily.weathercode[i],
+        max: Math.round(daily.temperature_2m_max[i]),
+        min: Math.round(daily.temperature_2m_min[i]),
+        rain: daily.precipitation_probability_max[i],
+        wind: Math.round(daily.windspeed_10m_max[i])
+      })).filter(d => travelDates.includes(d.date));
+
+      const cur = data.current_weather;
+      const curCode = cur.weathercode;
+      const dateLabels = {'2026-03-25':'3/25 수','2026-03-26':'3/26 목','2026-03-27':'3/27 금','2026-03-28':'3/28 토'};
+
+      html += `<div class="weather-city-card">
+        <div class="wc-top">
+          <div class="wc-left">
+            <div class="wc-city">${loc.emoji} ${loc.name}</div>
+            <div class="wc-date">${loc.nameJp} · 여행일: ${loc.days.join(', ')}</div>
+          </div>
+          <div class="wc-right">
+            <div class="wc-temp">${Math.round(cur.temperature)}°</div>
+            <div class="wc-desc">${WMO_ICONS[curCode]||'🌡️'} ${WMO_DESC[curCode]||'날씨 정보'}</div>
+          </div>
+        </div>
+        <div class="wc-forecast">
+          <div class="wc-forecast-title">여행 기간 예보</div>
+          <div class="wc-days">`;
+
+      if (forecastDays.length > 0) {
+        forecastDays.forEach(d => {
+          html += `<div class="wc-day">
+            <div class="wc-day-name">${dateLabels[d.date] || d.date}</div>
+            <div class="wc-day-icon">${WMO_ICONS[d.code]||'🌡️'}</div>
+            <div class="wc-day-temp">${d.max}° / ${d.min}°</div>
+            <div class="wc-day-rain">💧 ${d.rain}%</div>
+          </div>`;
+        });
+      } else {
+        html += `<div style="font-size:11px;color:#888;padding:8px;">예보 데이터 준비 중</div>`;
+      }
+      html += `</div></div>
+        <div class="wc-stats">
+          <div class="wc-stat"><div class="wc-stat-label">현재 기온</div><div class="wc-stat-value">${Math.round(cur.temperature)}°C</div></div>
+          <div class="wc-stat"><div class="wc-stat-label">풍속</div><div class="wc-stat-value">${Math.round(cur.windspeed)} km/h</div></div>
+          <div class="wc-stat"><div class="wc-stat-label">날씨</div><div class="wc-stat-value">${WMO_ICONS[curCode]||'—'}</div></div>
+        </div>
+      </div>`;
+    } catch(e) {
+      html += `<div class="wc-error">${loc.name} 날씨를 불러오지 못했어요. 네트워크를 확인해주세요.</div>`;
+    }
+  }
+  container.innerHTML = html;
+}
+
+// ── 일정 ──
+const schedules = [
+  [
+    {time:"07:00",title:"기상",note:""},
+    {time:"08:00",title:"교토역 이동 & 짐 보관",note:""},
+    {time:"09:30",title:"대한항공 KE2117 출발",note:"김포공항 → 간사이공항 11:20 도착",map:"https://maps.google.com/?q=김포국제공항"},
+    {time:"11:12",title:"서정민 신칸센 출발",note:"도쿄 → 교토 / 노조미 27호 / 13:23 도착",map:"https://maps.google.com/?q=東京駅"},
+    {time:"12:00",title:"교토역 도착 & 호텔 이동",note:""},
+    {time:"15:00",title:"Hotel ZIZI 체크인",note:"기온, 교토",map:"https://maps.google.com/?q=Hotel+ZIZI+Kyoto+Gion"},
+    {time:"16:00",title:"기온거리 & 청수사",note:"걸어서 이동",map:"https://maps.google.com/?q=清水寺+京都"},
+    {time:"20:00",title:"후시미이나리 야간 구경",note:"야간 분위기 만끽",map:"https://maps.google.com/?q=伏見稲荷大社+京都"},
+    {time:"21:30",title:"숙소 복귀",note:""},
+  ],
+  [
+    {time:"07:00",title:"기상",note:""},
+    {time:"08:00",title:"아라시야마 도착",note:"일찍 이동해서 인파 피하기",map:"https://maps.google.com/?q=嵐山+京都"},
+    {time:"10:40",title:"요시무라 점심",note:"이름 적기 필수! 강변 뷰 🥢",map:"https://maps.google.com/?q=嵐山よしむら"},
+    {time:"12:00",title:"교토역 이동",note:""},
+    {time:"14:25",title:"교토역 출발 (하시다테 특급)",note:"후쿠치야마역 환승 → 키노사키 16:50 도착\n※ 같은 승강장 맞은편 코노토리로 8분 환승",map:"https://maps.google.com/?q=京都駅"},
+    {time:"16:50",title:"키노사키 도착",note:"역 앞 오케쇼 센교에서 저녁",map:"https://maps.google.com/?q=城崎温泉駅"},
+    {time:"19:00",title:"료칸 체크인",note:"千年の湯 古まん",map:"https://maps.google.com/?q=千年の湯+古まん+城崎"},
+    {time:"19:30",title:"유카타 입고 온천 투어",note:"히트텍 필수! 밤 산책 즐기기"},
+  ],
+  [
+    {time:"07:00",title:"기상 & 짐 정리",note:""},
+    {time:"08:00",title:"파나티카 빵 구매",note:"기차 안에서 먹을 빵 준비 🥐"},
+    {time:"09:12",title:"아마노하시다테로 출발",note:"기차 탑승",map:"https://maps.google.com/?q=天橋立駅"},
+    {time:"10:00",title:"로프웨이 & 카사마츠공원 전망대",note:"리프트 탑승 후 전망 구경",map:"https://maps.google.com/?q=傘松公園+天橋立"},
+    {time:"10:30",title:"점심 — 바지락 우동",note:"현지 식당에서 간단히"},
+    {time:"12:00",title:"소나무숲 자전거 투어",note:"카사마츠공원까지",map:"https://maps.google.com/?q=天橋立+自転車レンタル"},
+    {time:"15:30",title:"유람선 타고 복귀",note:"키노사키로 복귀"},
+    {time:"18:00",title:"료칸 저녁식사",note:"가이세키 정식 — 게 & 다지마규 코스 🦀"},
+    {time:"19:30",title:"온천욕 & 로컬 게임장",note:"사격 게임 한 판 후 온천 즐기기"},
+  ],
+  [
+    {time:"07:00",title:"기상 & 조식",note:"정갈한 일본식 정찬"},
+    {time:"08:00",title:"느긋한 온천욕 & 짐 정리",note:""},
+    {time:"12:30",title:"기차 출발",note:"도시락 구매 후 탑승"},
+    {time:"14:00",title:"정민 배웅 & 공항 이동",note:"간사이 공항으로"},
+    {time:"16:33",title:"서정민 신칸센 출발",note:"교토 → 도쿄 / 히카리 658호 / 19:09 도착",map:"https://maps.google.com/?q=京都駅"},
+    {time:"19:55",title:"대한항공 KE2120 탑승",note:"간사이공항 → 김포공항 21:55 도착",map:"https://maps.google.com/?q=関西国際空港"},
+  ]
+];
+
+let currentDay = 0;
+function showDay(idx, btn) {
+  currentDay = idx;
+  document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  const data = schedules[idx];
+  document.getElementById('day-content').innerHTML = data.map((item, i) => `
+    <div class="sch-item">
+      <div class="sch-time">${item.time}</div>
+      <div class="sch-line">
+        <div class="dot ${item.map ? '' : 'dot-g'}"></div>
+        ${i < data.length - 1 ? '<div class="vline"></div>' : ''}
+      </div>
+      <div class="sch-body">
+        <div class="sch-title">${item.title}</div>
+        ${item.note ? `<div class="sch-note">${item.note}</div>` : ''}
+        ${item.map ? `<a class="map-link" href="${item.map}" target="_blank">지도에서 길찾기 ↗</a>` : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
+function showTab(id, el) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('sec-' + id).classList.add('active');
+  el.classList.add('active');
+  if (id === 'schedule') showDay(currentDay, null);
+  if (id === 'weather') loadWeather();
+}
+
+// ── 챗봇 ──
+
+
+showDay(0, null);
+</script>
+</body>
+</html>
